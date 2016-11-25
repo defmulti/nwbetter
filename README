@@ -88,7 +88,7 @@ set this to 'cd, vinyl'
 
 You should end up with something like this:
 
-    [whatcd]
+    [passtheheadphones]
     username = RequestBunny
     password = clapton
     data_dir = /srv/downloads
