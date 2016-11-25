@@ -26,7 +26,7 @@ Once you've got Python installed, you will need a few modules: mechanize,
 mutagen, and requests. Try this:
 
     $ pip install -r requirements.txt
-
+    
 Alternatively, if you have setuptools installed, you can do this (in the
 source directory):
 
@@ -56,6 +56,10 @@ or
 
 And you will receive a notification stating that you should edit the
 configuration file \~/.pthbetter/config (if you're lucky).
+
+If you have an error, try to setup chmod 777 on all files, even may be directory
+
+     $ chmod 777 *
 
 Configuration
 -------------
@@ -118,6 +122,10 @@ Usage
 
 Examples
 --------
+
+You can turn pthbetter executable with the command:
+
+    $ chmod +x pthbetter
 
 To transcode and upload every FLAC you've every downloaded (this may
 take a while):
