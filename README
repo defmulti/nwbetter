@@ -40,11 +40,20 @@ lame, and sox. The method of installing these programs varies
 depending on your operating system, but if you're using something like
 Ubuntu you can do this:
 
-    # aptitude install mktorrent flac lame sox
+    # aptitude install flac lame sox
 
 or
 
-    # apt-get install mktorrent flac lame sox
+    # apt-get install flac lame sox
+    
+To install the last version of Mktorrent, we need to remove the old version and clone the github repo in a dir and make / make install
+
+    $ sudo apt-get purge mktorrent
+    $ cd yourdir/
+    $ git clone https://github.com/Rudde/mktorrent.git
+    $ cd mktorrent/
+    $ make
+    $ sudo make install
 
 At this point you may execute the following command:
 
@@ -143,7 +152,7 @@ downloaded the FLAC and it is located in your `data_dir`):
     
 or
 
-    $ ./pthbetter
+    $ ./pthbetter http://passtheheadphones.me/torrents.php?id=1000\&torrentid=1000000
 
 Note that if you specify a particular release(s), pthbetter will
 ignore your configuration's media types and attempt to transcode the
