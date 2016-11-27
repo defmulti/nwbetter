@@ -48,7 +48,9 @@ or
 
     # apt-get install flac lame sox
     
-To install the last version of Mktorrent, we need to remove the old version and clone the github repo in a dir and make / make install
+To install the lastest version of mktorrent, we need to remove the old version and clone the github repo in a dir and make / make install
+
+With sudo:
 
     $ sudo apt-get purge mktorrent
     $ cd yourdir/
@@ -56,6 +58,14 @@ To install the last version of Mktorrent, we need to remove the old version and 
     $ cd mktorrent/
     $ make
     $ sudo make install
+    
+Without sudo:
+
+    $ cd yourdir
+    $ git clone https://github.com/Rudde/mktorrent.git
+    $ cd mktorrent
+    $ make
+    $ echo 'export PATH=<path to mktorrent folder here>:$PATH' >> ~/.bashrc; . ~/.bashrc
 
 At this point you may execute the following command:
 
