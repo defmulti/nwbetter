@@ -125,9 +125,10 @@ def main():
     for groupid, torrentid in candidates:
         group = api.request('torrentgroup', id=groupid)
         torrent = [t for t in group['torrents'] if t['id'] == torrentid][0]
-
+        name = pthapi.unescape(group['group']['name'])
+        
         print
-        print "Release found: %s (%s)" % (pthapi.unescape(group['group']['name']), group['group']['year'])
+        print "Release found: %s (%s)" % (name.encode('utf-8'), group['group']['year'])
         print "Release URL: %s" % api.release_url(group, torrent)
 
         if not torrent['filePath']:
