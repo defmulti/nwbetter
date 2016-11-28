@@ -1,16 +1,16 @@
 # PTHBetter #
 
-## This is a fork of the original what.cd version with compatability for passtheheadphones.me ##
+## This is a fork of the original what.cd version with compatability for PTH ##
 
 Introduction
 ------------
 
 PTHBetter is a script which automatically transcodes and uploads FLACs
-on Passtheheadphones.me .
+on PTH.
 
 The following command will scan through every FLAC you have ever
 downloaded, determine which formats are needed, transcode the FLAC to
-each needed format, and upload each format to Passtheheadphones.me -- automatically.
+each needed format, and upload each format to PTH -- automatically.
 
     $ pthbetter
 
@@ -102,7 +102,7 @@ like this:
     formats = flac, v0, 320,
     media = sacd, soundboard, web, dvd, cd, dat, vinyl, blu-ray
 
-`username` and `password` are your Passtheheadphones.me login credentials. 
+`username` and `password` are your PTH login credentials. 
 `data_dir` is the directory where your downloads are stored. 
 `output_dir` is the directory where your transcodes will be created. If
 the value is blank, `data_dir` will be used.
@@ -111,7 +111,7 @@ your watch directory). `formats` is a list of formats that you'd like to
 support (so if you don't want to upload V2, just remove it from this
 list).
 `media` is a list of lossless media types you want to consider for
-transcoding. The default value is all Passtheheadphones.me lossless formats, but if
+transcoding. The default value is all PTH lossless formats, but if
 you want to transcode only CD and vinyl media, for example, you would
 set this to 'cd, vinyl'
 
@@ -165,10 +165,12 @@ To transcode and upload a specific release (provided you have already
 downloaded the FLAC and it is located in your `data_dir`):
 
     $ pthbetter http://passtheheadphones.me/torrents.php?id=1000\&torrentid=1000000
+or  $ pthbetter "http://passtheheadphones.me/torrents.php?id=1000&torrentid=1000000"
     
 or
 
     $ ./pthbetter http://passtheheadphones.me/torrents.php?id=1000\&torrentid=1000000
+or  $ ./pthbetter "http://passtheheadphones.me/torrents.php?id=1000&torrentid=1000000"
 
 Note that if you specify a particular release(s), pthbetter will
 ignore your configuration's media types and attempt to transcode the
