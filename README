@@ -178,3 +178,15 @@ releases you have specified regardless of their media type (so long as
 they are lossless types).
 
 ---- 
+
+#ADDITIONAL INFORMATION
+
+If after this you have an issue to create torrent on ruTorrent, please check the file /rutorrent/plugins/create/conf.php and verify :
+    
+    $ $pathToCreatetorrent = '';
+
+of, it's not working
+
+    $pathToCreatetorrent = '/usr/local/bin/mktorrent';
+
+
