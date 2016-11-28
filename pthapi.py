@@ -194,7 +194,7 @@ class PthAPI:
         url = "https://passtheheadphones.me/torrents.php?action=edit&id=%s" % torrent['id']
         response = self.session.get(url)
         forms = mechanize.ParseFile(StringIO(response.text.encode('utf-8')), url)
-        form = forms[-3]
+        form = forms[-1]
         form.find_control('bitrate').set('1', '24bit Lossless')
         _, data, headers = form.click_request_data()
         return self.session.post(url, data=data, headers=dict(headers))
