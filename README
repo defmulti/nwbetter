@@ -29,9 +29,13 @@ PTHBetter.
 First and foremost, you will need Python 2.7 or newer.
 
 Once you've got Python installed, you will need a few modules: mechanize,
-mutagen, and requests. Try this:
+mutagen, and requests. Try this as sudo/root:
 
     $ pip install -r requirements.txt
+    
+Or without sudo:
+
+    $ pip install --user -r requirements.txt
     
 Alternatively, if you have setuptools installed, you can do this (in the
 source directory):
