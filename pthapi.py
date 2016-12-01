@@ -76,6 +76,7 @@ class PthAPI:
         self.authkey = None
         self.passkey = None
         self.userid = None
+        self.userclass = None
         self.tracker = "https://please.passtheheadphones.me/"
         self.last_request = time.time()
         self.rate_limit = 2.0 # seconds between requests
@@ -93,6 +94,7 @@ class PthAPI:
         self.authkey = accountinfo['authkey']
         self.passkey = accountinfo['passkey']
         self.userid = accountinfo['id']
+        self.userclass = accountinfo['userstats']['class']
 
     def logout(self):
         self.session.get("https://passtheheadphones.me/logout.php?auth=%s" % self.authkey)
