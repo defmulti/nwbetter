@@ -238,15 +238,15 @@ def get_transcode_dir(flac_dir, output_dir, output_format, resample):
         transcode_dir = transcode_dir + " (" + output_format + ")"
     if resample:
         if '24-96' in flac_dir or '2496' in flac_dir or '9624' in flac_dir or '96-24' in flac_dir:
-            transcode_dir = transcode_dir.replace('24-96', '16-44')
-            transcore_dir = transcode_dir.replace('2496', '1644')
-            transcode_dir = transcode_dir.replace('96-24', '44-16')
-            transcore_dir = transcode_dir.replace('9624', '4416')
+            transcode_dir = transcode_dir.replace('24-96', '16-48')
+            transcore_dir = transcode_dir.replace('2496', '1648')
+            transcode_dir = transcode_dir.replace('96-24', '48-16')
+            transcore_dir = transcode_dir.replace('9624', '4816')
         if '24bit' in flac_dir or '96kHz' in flac_dir or '192kHz' in flac_dir or '48kHz' in flac_dir:
             transcode_dir = transcode_dir.replace('24bit', '16bit')
-            transcode_dir = transcode_dir.replace('96kHz', '44kHz')
-            transcode_dir = transcode_dir.replace('192kHz', '44kHz')
-            transcode_dir = transcode_dir.replace('48kHz', '44kHz')
+            transcode_dir = transcode_dir.replace('96kHz', '48kHz')
+            transcode_dir = transcode_dir.replace('192kHz', '48kHz')
+            transcode_dir = transcode_dir.replace('48kHz', '48kHz')
 
     return os.path.join(output_dir, transcode_dir)
 
