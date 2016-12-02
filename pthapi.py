@@ -139,21 +139,16 @@ class PthAPI:
         res['torrentgroup'] = keep_releases
         return res
 
-    def snatched(self, skip=None, media=lossless_media):
+    def get_candidates(self, skip=None, media=lossless_media, source='snatched'):
         if not media.issubset(lossless_media):
             raise ValueError('Unsupported media type %s' % (media - lossless_media).pop())
-
-        # gazelle doesn't currently support multiple values per query
-        # parameter, so we have to search a media type at a time;
-        # unless it's all types, in which case we simply don't specify
-        # a 'media' parameter (defaults to all types).
-
+            
         if media == lossless_media:
             media_params = ['']
         else:
             media_params = ['&media=%s' % media_search_map[m] for m in media]
-
-        url = 'https://passtheheadphones.me/torrents.php?type=snatched&userid=%s&format=FLAC' % self.userid
+            
+        url = 'https://passtheheadphones.me/torrents.php?type=%s&userid=%s&format=FLAC' % (source, self.userid)
         for mp in media_params:
             page = 1
             done = False

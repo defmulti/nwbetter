@@ -12,6 +12,8 @@ from multiprocessing import cpu_count
 import pthapi
 import transcode
 import tagging
+from itertools import chain
+
 from _version import __version__
 
 def banner():
@@ -120,7 +122,9 @@ def main():
         candidates = [(int(query['id']), int(query['torrentid'])) for query in\
                 [dict(urlparse.parse_qsl(urlparse.urlparse(url).query)) for url in args.release_urls]]
     else:
-        candidates = api.snatched(skip=seen, media=supported_media)
+        snatched = api.get_candidates(skip=seen, media=supported_media, source='snatched')
+        uploaded = api.get_candidates(skip=seen, media=supported_media, source='uploaded')
+        candidates = chain(uploaded, snatched)
 
     for groupid, torrentid in candidates:
         group = api.request('torrentgroup', id=groupid)
