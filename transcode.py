@@ -228,23 +228,25 @@ def transcode(flac_file, output_dir, output_format):
 
 def get_transcode_dir(flac_dir, output_dir, output_format, resample):
     transcode_dir = os.path.basename(flac_dir)
-
-    if 'LOSSLESS' in flac_dir.upper():        
-        transcode_dir = re.sub(re.compile('LOSSLESS', re.I), output_format, transcode_dir)    
-    elif 'FLAC' in flac_dir.upper():
-        transcode_dir = re.sub(re.compile('FLAC', re.I), output_format, transcode_dir)
-    else:
+    tags = ['FLAC - LOSSLESS', 'FLAC LOSSLESS', 'FLAC', 'LOSSLESS']
+    found = False
+    for t in tags:
+        if t in flac_dir.upper():
+            transcode_dir = re.sub(re.compile(t, re.I), output_format, transcode_dir)
+            found = True
+    if not found:
         transcode_dir = transcode_dir + " (" + output_format + ")"
-        if output_format != 'FLAC':
-            transcode_dir = re.sub(re.compile('FLAC', re.I), '', transcode_dir)
     if resample:
-        if '24' in flac_dir and '96' in flac_dir:
-            # XXX: theoretically, this could replace part of the album title too.
-            # e.g. "24 days in 96 castles - [24-96]" would become "16 days in 44 castles - [16-44]"
-            transcode_dir = transcode_dir.replace('24', '16')
-            transcode_dir = transcode_dir.replace('96', '44')
-        else:
-            transcode_dir += " [16-44]"
+        if '24-96' in flac_dir or '2496' in flac_dir or '9624' in flac_dir or '96-24' in flac_dir:
+            transcode_dir = transcode_dir.replace('24-96', '16-44')
+            transcore_dir = transcode_dir.replace('2496', '1644')
+            transcode_dir = transcode_dir.replace('96-24', '44-16')
+            transcore_dir = transcode_dir.replace('9624', '4416')
+        if '24bit' in flac_dir or '96kHz' in flac_dir or '192kHz' in flac_dir or '48kHz' in flac_dir:
+            transcode_dir = transcode_dir.replace('24bit', '16bit')
+            transcode_dir = transcode_dir.replace('96kHz', '44kHz')
+            transcode_dir = transcode_dir.replace('192kHz', '44kHz')
+            transcode_dir = transcode_dir.replace('48kHz', '44kHz')
 
     return os.path.join(output_dir, transcode_dir)
 

@@ -17,11 +17,11 @@ each needed format, and upload each format to PTH -- automatically.
 Installation
 ------------
 
-IF YOU HAVE A PREVIOUS VERSION OF WHATBETTER OR PTHBETTER, YOU NEED TO REMOVE ALL FILE.
+**IF YOU HAVE A PREVIOUS VERSION OF WHATBETTER OR PTHBETTER, YOU NEED TO REMOVE ALL FILE.**
 
-BE CAREFUL, ON PTH V2 IS TOLERATE ONLY IF V0 DOESNT EXIS'T.
+*BE CAREFUL, ON PTH V2 IS TOLERATE ONLY IF V0 DOESN'T EXIST.
 V2 IS TRUMPABLE WITH V0.
-PLEASE DON'T ADD V2 ON YOUR CONFIG FILE.
+PLEASE DON'T ADD V2 ON YOUR CONFIG FILE.*
 
 You're going to need to install a few dependencies before using
 PTHBetter.
@@ -84,7 +84,7 @@ or
     $ ./pthbetter
 
 And you will receive a notification stating that you should edit the
-configuration file \~/.pthbetter/config (if you're lucky).
+configuration file `~/.pthbetter/config` (if you're lucky).
 
 If you have an error, try to setup chmod 777 on all files, even may be directory
 
@@ -183,14 +183,13 @@ they are lossless types).
 
 ---- 
 
-#ADDITIONAL INFORMATION
+ADDITIONAL INFORMATION
+----------------------
 
-If after this you have an issue to create torrent on ruTorrent, please check the file /rutorrent/plugins/create/conf.php and verify :
+If after this you have an issue to create torrent on ruTorrent, please check the file `/rutorrent/plugins/create/conf.php` and verify :
     
     $ $pathToCreatetorrent = '';
 
 of, it's not working
 
     $pathToCreatetorrent = '/usr/local/bin/mktorrent';
-
-
