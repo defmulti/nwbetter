@@ -74,7 +74,7 @@ def main():
         config.set('passtheheadphones', 'data_dir', '')
         config.set('passtheheadphones', 'output_dir', '')
         config.set('passtheheadphones', 'torrent_dir', '')
-        config.set('passtheheadphones', 'formats', 'flac, v0, 320, v2')
+        config.set('passtheheadphones', 'formats', 'flac, v0, 320')
         config.set('passtheheadphones', 'media', ', '.join(pthapi.lossless_media))
         config.write(open(args.config, 'w'))
         print 'Please edit the configuration file: %s' % args.config
