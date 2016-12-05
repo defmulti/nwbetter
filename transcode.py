@@ -17,7 +17,6 @@ import tagging
 encoders = {
     '320':  {'enc': 'lame', 'ext': '.mp3',  'opts': '-h -b 320 --ignore-tag-errors'},
     'V0':   {'enc': 'lame', 'ext': '.mp3',  'opts': '-V 0 --vbr-new --ignore-tag-errors'},
-    'V2':   {'enc': 'lame', 'ext': '.mp3',  'opts': '-V 2 --vbr-new --ignore-tag-errors'},
     'FLAC': {'enc': 'flac', 'ext': '.flac', 'opts': '--best'}
 }
 
