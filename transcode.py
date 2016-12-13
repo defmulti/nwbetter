@@ -227,7 +227,7 @@ def transcode(flac_file, output_dir, output_format):
 
 def get_transcode_dir(flac_dir, output_dir, output_format, resample):
     transcode_dir = os.path.basename(flac_dir)
-    tags = ['FLAC - LOSSLESS', 'FLAC LOSSLESS', 'FLAC', 'LOSSLESS']
+    tags = ['FLAC - LOSSLESS', 'FLAC LOSSLESS', 'LOSSLESS', '24FLAC', 'FLAC']
     found = False
     for t in tags:
         if t in flac_dir.upper():
@@ -236,11 +236,14 @@ def get_transcode_dir(flac_dir, output_dir, output_format, resample):
     if not found:
         transcode_dir = transcode_dir + " (" + output_format + ")"
     if resample:
-        if '24-96' in flac_dir or '2496' in flac_dir or '9624' in flac_dir or '96-24' in flac_dir:
+        if '24-96' in flac_dir or '2496' in flac_dir or '9624' in flac_dir or '96-24' in flac_dir or '24 96' in flac_dir or '24-192' in flac_dir or '24 48' in flac_dir:
             transcode_dir = transcode_dir.replace('24-96', '16-48')
-            transcore_dir = transcode_dir.replace('2496', '1648')
+            transcode_dir = transcode_dir.replace('2496', '1648')
             transcode_dir = transcode_dir.replace('96-24', '48-16')
-            transcore_dir = transcode_dir.replace('9624', '4816')
+            transcode_dir = transcode_dir.replace('9624', '4816')
+            transcode_dir = transcode_dir.replace('24 96', '48 16')
+            transcode_dir = transcode_dir.replace('24-192', '16-48')
+            transcode_dir = transcode_dir.replace('24 48', '16 48')
         if '24bit' in flac_dir or '96kHz' in flac_dir or '192kHz' in flac_dir or '48kHz' in flac_dir:
             transcode_dir = transcode_dir.replace('24bit', '16bit')
             transcode_dir = transcode_dir.replace('96kHz', '48kHz')
