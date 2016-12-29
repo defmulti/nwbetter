@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 '''
-Installer script for pthbetter.
+Installer script for nwbetter.
 '''
 
 from setuptools import setup
@@ -16,19 +16,19 @@ else:
     raise RuntimeError("Unable to find version string in %s." % (VERSIONFILE,))
 
 setup(
-    name = "pthbetter",
+    name = "nwbetter",
     description = "WhatBetter's fork - Greetz Zach Denton",
-    author = 'PTH',
-    author_email = 'pth@pth.com',
+    author = 'NW',
+    author_email = 'nw@nw.com',
     version = verstr,
-    url = 'https://github.com/aktavor69/pthbetter',
+    url = 'https://github.com/aktavor69/nwbetter',
     py_modules = [
         '_version',
         'tagging',
         'transcode',
-        'pthapi'
+        'nwapi'
     ],
-    scripts = ['pthbetter'],
+    scripts = ['nwbetter'],
     install_requires = [
         'mutagen',
         'mechanize',

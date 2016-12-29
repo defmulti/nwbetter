@@ -1,30 +1,30 @@
-# PTHBetter #
+# NWBetter #
 
-## This is a fork of the original what.cd version with compatability for PTH ##
+## This is a fork of the original what.cd version with compatability for NW ##
 
 Introduction
 ------------
 
-PTHBetter is a script which automatically transcodes and uploads FLACs
-on PTH.
+NWBetter is a script which automatically transcodes and uploads FLACs
+on NW.
 
 The following command will scan through every FLAC you have ever
 downloaded, determine which formats are needed, transcode the FLAC to
-each needed format, and upload each format to PTH -- automatically.
+each needed format, and upload each format to NW -- automatically.
 
-    $ pthbetter
+    $ nwbetter
 
 Installation
 ------------
 
-**IF YOU HAVE A PREVIOUS VERSION OF WHATBETTER OR PTHBETTER, YOU NEED TO REMOVE ALL FILE.**
+**IF YOU HAVE A PREVIOUS VERSION OF WHATBETTER OR NWBETTER, YOU NEED TO REMOVE ALL FILE.**
 
-*BE CAREFUL, ON PTH V2 IS TOLERATE ONLY IF V0 DOESN'T EXIST.
+*BE CAREFUL, ON NW V2 IS TOLERATE ONLY IF V0 DOESN'T EXIST.
 V2 IS TRUMPABLE WITH V0.
 PLEASE DON'T ADD V2 ON YOUR CONFIG FILE.*
 
 You're going to need to install a few dependencies before using
-PTHBetter.
+NWBetter.
 
 First and foremost, you will need Python 2.7 or newer.
 
@@ -77,14 +77,14 @@ Without sudo:
 
 At this point you may execute the following command:
 
-    $ pthbetter
+    $ nwbetter
     
 or
 
-    $ ./pthbetter
+    $ ./nwbetter
 
 And you will receive a notification stating that you should edit the
-configuration file `~/.pthbetter/config` (if you're lucky).
+configuration file `~/.nwbetter/config` (if you're lucky).
 
 If you have an error, try to setup chmod 777 on all files, even may be directory
 
@@ -94,10 +94,10 @@ Configuration
 -------------
 
 You've made it far! Congratulations. Open up the file
-\~/.pthbetter/config in a text editor. You're going to see something
+\~/.nwbetter/config in a text editor. You're going to see something
 like this:
 
-    [passtheheadphones]
+    [notwhat]
     username =
     password = 
     data_dir =
@@ -106,7 +106,7 @@ like this:
     formats = flac, v0, 320,
     media = sacd, soundboard, web, dvd, cd, dat, vinyl, blu-ray
 
-`username` and `password` are your PTH login credentials. 
+`username` and `password` are your NW login credentials. 
 `data_dir` is the directory where your downloads are stored. 
 `output_dir` is the directory where your transcodes will be created. If
 the value is blank, `data_dir` will be used.
@@ -115,13 +115,13 @@ your watch directory). `formats` is a list of formats that you'd like to
 support (so if you don't want to upload V2, just remove it from this
 list).
 `media` is a list of lossless media types you want to consider for
-transcoding. The default value is all PTH lossless formats, but if
+transcoding. The default value is all NW lossless formats, but if
 you want to transcode only CD and vinyl media, for example, you would
 set this to 'cd, vinyl'
 
 You should end up with something like this:
 
-    [passtheheadphones]
+    [notwhat]
     username = RequestBunny
     password = clapton
     data_dir = /srv/downloads
@@ -130,12 +130,12 @@ You should end up with something like this:
     formats = flac, v0, 320
     media = cd, vinyl, web
 
-Alright! Now you're ready to use PTHBetter.
+Alright! Now you're ready to use NWBetter.
 
 Usage
 -----
 
-    usage: pthbetter [-h] [-s] [--config CONFIG] [--cache CACHE]
+    usage: nwbetter [-h] [-s] [--config CONFIG] [--cache CACHE]
                       [release_urls [release_urls ...]]
 
     positional arguments:
@@ -146,37 +146,37 @@ Usage
       -s, --single     only add one format per release (useful for getting unique
                        groups)
       --config CONFIG  the location of the configuration file (default:
-                       ~/.pthbetter/config)
-      --cache CACHE    the location of the cache (default: ~/.pthbetter/cache)
+                       ~/.nwbetter/config)
+      --cache CACHE    the location of the cache (default: ~/.nwbetter/cache)
 
 Examples
 --------
 
-You can turn pthbetter executable with the command:
+You can turn nwbetter executable with the command:
 
-    $ chmod +x pthbetter
+    $ chmod +x nwbetter
 
 To transcode and upload every FLAC you've every downloaded (this may
 take a while):
 
-    $ pthbetter
+    $ nwbetter
 
 or
 
-    $ ./pthbetter
+    $ ./nwbetter
 
 To transcode and upload a specific release (provided you have already
 downloaded the FLAC and it is located in your `data_dir`):
 
-    $ pthbetter http://passtheheadphones.me/torrents.php?id=1000\&torrentid=1000000
-or  $ pthbetter "http://passtheheadphones.me/torrents.php?id=1000&torrentid=1000000"
+    $ nwbetter http://notwhat.cd/torrents.php?id=1000\&torrentid=1000000
+or  $ nwbetter "http://notwhat.cd/torrents.php?id=1000&torrentid=1000000"
     
 or
 
-    $ ./pthbetter http://passtheheadphones.me/torrents.php?id=1000\&torrentid=1000000
-or  $ ./pthbetter "http://passtheheadphones.me/torrents.php?id=1000&torrentid=1000000"
+    $ ./nwbetter http://notwhat.cd/torrents.php?id=1000\&torrentid=1000000
+or  $ ./nwbetter "http://notwhat.cd/torrents.php?id=1000&torrentid=1000000"
 
-Note that if you specify a particular release(s), pthbetter will
+Note that if you specify a particular release(s), nwbetter will
 ignore your configuration's media types and attempt to transcode the
 releases you have specified regardless of their media type (so long as
 they are lossless types).

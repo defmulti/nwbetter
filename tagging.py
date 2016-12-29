@@ -1,4 +1,4 @@
-# Metadata tag support for PTHbetter.
+# Metadata tag support for NWbetter.
 #
 # Copyright (c) 2013 Milky Joe <milkiejoe@gmail.com>
 #
@@ -75,7 +75,7 @@ def scrub_tag(name, value):
     return scrubbed_value
 
 def check_tags(filename, check_tracknumber_format=True):
-    """Verify that the file has the required PTH tags.
+    """Verify that the file has the required NW tags.
 
     Returns (True, None) if OK, (False, msg) if a tag is missing or
     invalid.
@@ -151,7 +151,7 @@ def copy_tags(flac_file, transcode_file):
 
     transcode_info.save()
 
-# EasyID3 extensions for PTHbetter.
+# EasyID3 extensions for NWbetter.
 
 for key, frameid in {
     'albumartist': 'TPE2',

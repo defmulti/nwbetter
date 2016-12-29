@@ -9,7 +9,7 @@ import subprocess
 import ConfigParser
 import cPickle as pickle
 from multiprocessing import cpu_count
-import pthapi
+import nwapi
 import transcode
 import tagging
 from itertools import chain
@@ -17,7 +17,7 @@ from itertools import chain
 from _version import __version__
 
 def banner():
-    return 'Created with PTHBetter version %s.' % __version__
+    return 'Created with NWBetter version %s.' % __version__
 
 def create_description(torrent, flac_dir, format, permalink):
     # Create an example command to document the transcode process.
@@ -40,21 +40,21 @@ def formats_needed(group, torrent, supported_formats):
 
     others = filter(same_group, group['torrents'])
     current_formats = set((t['format'], t['encoding']) for t in others)
-    missing_formats = [format for format, details in [(f, pthapi.formats[f]) for f in supported_formats]\
+    missing_formats = [format for format, details in [(f, nwapi.formats[f]) for f in supported_formats]\
                            if (details['format'], details['encoding']) not in current_formats]
-    allowed_formats = pthapi.allowed_transcodes(torrent)
+    allowed_formats = nwapi.allowed_transcodes(torrent)
     return [format for format in missing_formats if format in allowed_formats]
 
 def main():
-    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter, prog='pthbetter')
+    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter, prog='nwbetter')
     parser.add_argument('release_urls', nargs='*', help='the URL where the release is located')
     parser.add_argument('-s', '--single', action='store_true', help='only add one format per release (useful for getting unique groups)')
     parser.add_argument('-j', '--threads', type=int, help='number of threads to use when transcoding',
             default=cpu_count())
     parser.add_argument('--config', help='the location of the configuration file', \
-            default=os.path.expanduser('~/.pthbetter/config'))
+            default=os.path.expanduser('~/.nwbetter/config'))
     parser.add_argument('--cache', help='the location of the cache', \
-            default=os.path.expanduser('~/.pthbetter/cache'))
+            default=os.path.expanduser('~/.nwbetter/cache'))
     parser.add_argument('-U', '--no-upload', action='store_true', help='don\'t upload new torrents (in case you want to do it manually)')
     parser.add_argument('-E', '--no-24bit-edit', action='store_true', help='don\'t try to edit 24-bit torrents mistakenly labeled as 16-bit')
     parser.add_argument('--version', action='version', version='%(prog)s ' + __version__)
@@ -68,47 +68,47 @@ def main():
     except:
         if not os.path.exists(os.path.dirname(args.config)):
             os.makedirs(os.path.dirname(args.config))
-        config.add_section('passtheheadphones')
-        config.set('passtheheadphones', 'username', '')
-        config.set('passtheheadphones', 'password', '')
-        config.set('passtheheadphones', 'data_dir', '')
-        config.set('passtheheadphones', 'output_dir', '')
-        config.set('passtheheadphones', 'torrent_dir', '')
-        config.set('passtheheadphones', 'formats', 'flac, v0, 320')
-        config.set('passtheheadphones', 'media', ', '.join(pthapi.lossless_media))
+        config.add_section('notwhat')
+        config.set('notwhat', 'username', '')
+        config.set('notwhat', 'password', '')
+        config.set('notwhat', 'data_dir', '')
+        config.set('notwhat', 'output_dir', '')
+        config.set('notwhat', 'torrent_dir', '')
+        config.set('notwhat', 'formats', 'flac, v0, 320')
+        config.set('notwhat', 'media', ', '.join(nwapi.lossless_media))
         config.write(open(args.config, 'w'))
         print 'Please edit the configuration file: %s' % args.config
         sys.exit(2)
     finally:
-        username = config.get('passtheheadphones', 'username')
-        password = config.get('passtheheadphones', 'password')
-        data_dir = os.path.expanduser(config.get('passtheheadphones', 'data_dir'))
+        username = config.get('notwhat', 'username')
+        password = config.get('notwhat', 'password')
+        data_dir = os.path.expanduser(config.get('notwhat', 'data_dir'))
         try:
-            output_dir = os.path.expanduser(config.get('passtheheadphones', 'output_dir'))
+            output_dir = os.path.expanduser(config.get('notwhat', 'output_dir'))
         except ConfigParser.NoOptionError:
             output_dir = None
         if not output_dir:
             output_dir = data_dir
-        torrent_dir = os.path.expanduser(config.get('passtheheadphones', 'torrent_dir'))
-        supported_formats = [format.strip().upper() for format in config.get('passtheheadphones', 'formats').split(',')]
+        torrent_dir = os.path.expanduser(config.get('notwhat', 'torrent_dir'))
+        supported_formats = [format.strip().upper() for format in config.get('notwhat', 'formats').split(',')]
 
         try:
-            media_config = config.get('passtheheadphones', 'media')
+            media_config = config.get('notwhat', 'media')
             if not media_config:
-                supported_media = pthapi.lossless_media
+                supported_media = nwapi.lossless_media
             else:
                 supported_media = set([medium.strip().lower() for medium in media_config.split(',')])
-                if not supported_media.issubset(set(pthapi.lossless_media)):
-                    print 'Unsupported media type "%s", edit your configuration' % (supported_media - pthapi.lossless_media).pop()
-                    print 'Supported types are:', ', '.join(pthapi.lossless_media)
+                if not supported_media.issubset(set(nwapi.lossless_media)):
+                    print 'Unsupported media type "%s", edit your configuration' % (supported_media - nwapi.lossless_media).pop()
+                    print 'Supported types are:', ', '.join(nwapi.lossless_media)
                     sys.exit(2)
         except ConfigParser.NoOptionError:
-            supported_media = pthapi.lossless_media
+            supported_media = nwapi.lossless_media
 
     upload_torrent = not args.no_upload
 
-    print 'Logging in to passtheheadphones ...'
-    api = pthapi.PthAPI(username, password)
+    print 'Logging in to notwhat ...'
+    api = nwapi.NwAPI(username, password)
 
     try:
         seen = pickle.load(open(args.cache))
@@ -129,23 +129,23 @@ def main():
     for groupid, torrentid in candidates:
         group = api.request('torrentgroup', id=groupid)
         torrent = [t for t in group['torrents'] if t['id'] == torrentid][0]
-        name = pthapi.unescape(group['group']['name'])
+        name = nwapi.unescape(group['group']['name'])
         
         print
         print "Release found: %s (%s)" % (name.encode('utf-8'), group['group']['year'])
         print "Release URL: %s" % api.release_url(group, torrent)
 
         if not torrent['filePath']:
-            flac_file = os.path.join(data_dir, pthapi.unescape(torrent['fileList']).split('{{{')[0])
+            flac_file = os.path.join(data_dir, nwapi.unescape(torrent['fileList']).split('{{{')[0])
             if not os.path.exists(flac_file):
                 print "Path not found - skipping: %s" % flac_file
                 continue
-            flac_dir = os.path.join(data_dir, "%s (%s) [FLAC]" % (pthapi.unescape(group['group']['name']), group['group']['year']))
+            flac_dir = os.path.join(data_dir, "%s (%s) [FLAC]" % (nwapi.unescape(group['group']['name']), group['group']['year']))
             if not os.path.exists(flac_dir):
                 os.makedirs(flac_dir)
             shutil.copy(flac_file, flac_dir)
         else:
-            flac_dir = os.path.join(data_dir, pthapi.unescape(torrent['filePath']))
+            flac_dir = os.path.join(data_dir, nwapi.unescape(torrent['filePath']))
 
         flac_dir = flac_dir.encode(sys.getfilesystemencoding())
 
