@@ -1,11 +1,11 @@
 #!/usr/bin/env python
+
 import os
 import sys
 import shutil
 import argparse
 import tempfile
 import urlparse
-import subprocess
 import ConfigParser
 import cPickle as pickle
 from multiprocessing import cpu_count
@@ -16,45 +16,49 @@ from itertools import chain
 
 from _version import __version__
 
+
 def banner():
     return 'Created with NWBetter version %s.' % __version__
 
+
 def create_description(torrent, flac_dir, format, permalink):
     # Create an example command to document the transcode process.
-    cmds = transcode.transcode_commands(format,
-            transcode.needs_resampling(flac_dir),
-            transcode.resample_rate(flac_dir),
-            'input.flac', 'output' + transcode.encoders[format]['ext'])
+    # cmds = transcode.transcode_commands(format,
+    #                                     transcode.needs_resampling(flac_dir),
+    #                                     transcode.resample_rate(flac_dir),
+    #                                     'input.flac', 'output' + transcode.encoders[format]['ext'])
 
     description = [
         'Transcode of [url=%s]%s[/url]' % (permalink, permalink),
-        ]
+    ]
     return description
 
+
 def formats_needed(group, torrent, supported_formats):
-    same_group = lambda t: t['media'] == torrent['media'] and\
-                           t['remasterYear'] == torrent['remasterYear'] and\
-                           t['remasterTitle'] == torrent['remasterTitle'] and\
-                           t['remasterRecordLabel'] == torrent['remasterRecordLabel'] and\
-                           t['remasterCatalogueNumber'] == torrent['remasterCatalogueNumber']
+    same_group = lambda t: (t['media'] == torrent['media'] and
+                            t['remasterYear'] == torrent['remasterYear'] and
+                            t['remasterTitle'] == torrent['remasterTitle'] and
+                            t['remasterRecordLabel'] == torrent['remasterRecordLabel'] and
+                            t['remasterCatalogueNumber'] == torrent['remasterCatalogueNumber'])
 
     others = filter(same_group, group['torrents'])
     current_formats = set((t['format'], t['encoding']) for t in others)
-    missing_formats = [format for format, details in [(f, nwapi.formats[f]) for f in supported_formats]\
-                           if (details['format'], details['encoding']) not in current_formats]
+    missing_formats = [format for format, details in [(f, nwapi.formats[f]) for f in supported_formats]
+                       if (details['format'], details['encoding']) not in current_formats]
     allowed_formats = nwapi.allowed_transcodes(torrent)
     return [format for format in missing_formats if format in allowed_formats]
+
 
 def main():
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter, prog='nwbetter')
     parser.add_argument('release_urls', nargs='*', help='the URL where the release is located')
     parser.add_argument('-s', '--single', action='store_true', help='only add one format per release (useful for getting unique groups)')
     parser.add_argument('-j', '--threads', type=int, help='number of threads to use when transcoding',
-            default=cpu_count())
-    parser.add_argument('--config', help='the location of the configuration file', \
-            default=os.path.expanduser('~/.nwbetter/config'))
-    parser.add_argument('--cache', help='the location of the cache', \
-            default=os.path.expanduser('~/.nwbetter/cache'))
+                        default=cpu_count())
+    parser.add_argument('--config', help='the location of the configuration file',
+                        default=os.path.expanduser('~/.nwbetter/config'))
+    parser.add_argument('--cache', help='the location of the cache',
+                        default=os.path.expanduser('~/.nwbetter/cache'))
     parser.add_argument('-U', '--no-upload', action='store_true', help='don\'t upload new torrents (in case you want to do it manually)')
     parser.add_argument('-E', '--no-24bit-edit', action='store_true', help='don\'t try to edit 24-bit torrents mistakenly labeled as 16-bit')
     parser.add_argument('--version', action='version', version='%(prog)s ' + __version__)
@@ -119,8 +123,8 @@ def main():
     print 'Searching for transcode candidates...'
     if args.release_urls:
         print 'You supplied one or more release URLs, ignoring your configuration\'s media types.'
-        candidates = [(int(query['id']), int(query['torrentid'])) for query in\
-                [dict(urlparse.parse_qsl(urlparse.urlparse(url).query)) for url in args.release_urls]]
+        candidates = [(int(query['id']), int(query['torrentid'])) for query in
+                      [dict(urlparse.parse_qsl(urlparse.urlparse(url).query)) for url in args.release_urls]]
     else:
         snatched = api.get_candidates(skip=seen, media=supported_media, source='snatched')
         uploaded = api.get_candidates(skip=seen, media=supported_media, source='uploaded')
@@ -130,7 +134,7 @@ def main():
         group = api.request('torrentgroup', id=groupid)
         torrent = [t for t in group['torrents'] if t['id'] == torrentid][0]
         name = nwapi.unescape(group['group']['name'])
-        
+
         print
         print "Release found: %s (%s)" % (name.encode('utf-8'), group['group']['year'])
         print "Release URL: %s" % api.release_url(group, torrent)
@@ -205,7 +209,8 @@ def main():
                         api.upload(group, torrent, new_torrent, format, description)
                     shutil.copy(new_torrent, torrent_dir)
                     print "done!"
-                    if args.single: break
+                    if args.single:
+                        break
                 except Exception as e:
                     print "Error adding format %s: %s" % (format, e)
                 finally:
@@ -216,6 +221,7 @@ def main():
 
         seen.add(str(torrentid))
         pickle.dump(seen, open(args.cache, 'wb'))
+
 
 if __name__ == "__main__":
     main()
