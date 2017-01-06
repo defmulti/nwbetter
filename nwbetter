@@ -52,6 +52,7 @@ def formats_needed(group, torrent, supported_formats):
 def main():
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter, prog='nwbetter')
     parser.add_argument('release_urls', nargs='*', help='the URL where the release is located')
+    parser.add_argument('-p', '--pretend', action='store_true', help='don\'t transcode and don\'t upload. just pretend to.')
     parser.add_argument('-s', '--single', action='store_true', help='only add one format per release (useful for getting unique groups)')
     parser.add_argument('-j', '--threads', type=int, help='number of threads to use when transcoding',
                         default=cpu_count())
@@ -199,6 +200,9 @@ def main():
         for format in needed:
             if os.path.exists(flac_dir):
                 print 'Adding format %s...' % format,
+                if args.pretend:
+                    print "pretend!"
+                    continue
                 tmpdir = tempfile.mkdtemp()
                 try:
                     transcode_dir = transcode.transcode_release(flac_dir, output_dir, format, max_threads=args.threads)
