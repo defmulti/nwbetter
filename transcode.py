@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 import os
 import re
 import sys
@@ -7,28 +8,30 @@ import pipes
 import shlex
 import shutil
 import signal
-import fnmatch
-import tempfile
 import subprocess
 import multiprocessing
 import mutagen.flac
 import tagging
 
 encoders = {
-    '320':  {'enc': 'lame', 'ext': '.mp3',  'opts': '-h -b 320 --ignore-tag-errors'},
-    'V0':   {'enc': 'lame', 'ext': '.mp3',  'opts': '-V 0 --vbr-new --ignore-tag-errors'},
+    '320': {'enc': 'lame', 'ext': '.mp3', 'opts': '-h -b 320 --ignore-tag-errors'},
+    'V0': {'enc': 'lame', 'ext': '.mp3', 'opts': '-V 0 --vbr-new --ignore-tag-errors'},
     'FLAC': {'enc': 'flac', 'ext': '.flac', 'opts': '--best'}
 }
+
 
 class TranscodeException(Exception):
     pass
 
+
 class TranscodeDownmixException(TranscodeException):
     pass
 
+
 class UnknownSampleRateException(TranscodeException):
     pass
-    
+
+
 # In most Unix shells, pipelines only report the return code of the
 # last process. We need to know if any process in the transcode
 # pipeline fails, not just the last one.
@@ -69,6 +72,7 @@ def run_pipeline(cmds):
     results.append((last_proc.returncode, last_stderr))
     return results
 
+
 def locate(root, match_function, ignore_dotfiles=True):
     '''
     Yields all filenames within the root directory for which match_function returns True.
@@ -80,11 +84,13 @@ def locate(root, match_function, ignore_dotfiles=True):
             else:
                 yield filename
 
+
 def ext_matcher(*extensions):
     '''
     Returns a function which checks if a filename has one of the specified extensions.
     '''
     return lambda f: os.path.splitext(f)[-1].lower() in extensions
+
 
 def is_24bit(flac_dir):
     '''
@@ -93,6 +99,7 @@ def is_24bit(flac_dir):
     flacs = (mutagen.flac.FLAC(flac_file) for flac_file in locate(flac_dir, ext_matcher('.flac')))
     return any(flac.info.bits_per_sample > 16 for flac in flacs)
 
+
 def is_multichannel(flac_dir):
     '''
     Returns True if any FLAC within flac_dir is multichannel.
@@ -100,12 +107,14 @@ def is_multichannel(flac_dir):
     flacs = (mutagen.flac.FLAC(flac_file) for flac_file in locate(flac_dir, ext_matcher('.flac')))
     return any(flac.info.channels > 2 for flac in flacs)
 
+
 def needs_resampling(flac_dir):
     '''
     Returns True if any FLAC within flac_dir needs resampling when
     transcoded.
     '''
     return is_24bit(flac_dir)
+
 
 def resample_rate(flac_dir):
     '''
@@ -119,6 +128,7 @@ def resample_rate(flac_dir):
         return 48000
     else:
         return None
+
 
 def transcode_commands(output_format, resample, needed_sample_rate, flac_file, transcode_file):
     '''
@@ -143,10 +153,10 @@ def transcode_commands(output_format, resample, needed_sample_rate, flac_file, t
         transcoding_steps.append(flac_encoder)
 
     transcode_args = {
-        'FLAC' : pipes.quote(flac_file),
-        'FILE' : pipes.quote(transcode_file),
-        'OPTS' : encoders[output_format]['opts'],
-        'SAMPLERATE' : needed_sample_rate,
+        'FLAC': pipes.quote(flac_file),
+        'FILE': pipes.quote(transcode_file),
+        'OPTS': encoders[output_format]['opts'],
+        'SAMPLERATE': needed_sample_rate,
     }
 
     if output_format == 'FLAC' and resample:
@@ -155,9 +165,11 @@ def transcode_commands(output_format, resample, needed_sample_rate, flac_file, t
         commands = map(lambda cmd: cmd % transcode_args, transcoding_steps)
     return commands
 
+
 # Pool.map() can't pickle lambdas, so we need a helper function.
 def pool_transcode((flac_file, output_dir, output_format)):
     return transcode(flac_file, output_dir, output_format)
+
 
 def transcode(flac_file, output_dir, output_format):
     '''
@@ -225,6 +237,7 @@ def transcode(flac_file, output_dir, output_format):
 
     return transcode_file
 
+
 def get_transcode_dir(flac_dir, output_dir, output_format, resample):
     transcode_dir = os.path.basename(flac_dir)
     tags = ['FLAC - LOSSLESS', 'FLAC LOSSLESS', 'LOSSLESS', '24FLAC', 'FLAC']
@@ -250,6 +263,7 @@ def get_transcode_dir(flac_dir, output_dir, output_format, resample):
             transcode_dir = transcode_dir.replace('192kHz', '48kHz')
 
     return os.path.join(output_dir, transcode_dir)
+
 
 def transcode_release(flac_dir, output_dir, output_format, max_threads=None):
     '''
@@ -289,6 +303,7 @@ def transcode_release(flac_dir, output_dir, output_format, max_threads=None):
     # or is interrupted.
     def pool_initializer():
         os.setsid()
+
         def sigterm_handler(signum, frame):
             # We're about to SIGTERM the group, including us; ignore
             # it so we can finish this handler.
@@ -339,17 +354,19 @@ def transcode_release(flac_dir, output_dir, output_format, max_threads=None):
         shutil.rmtree(transcode_dir)
         raise
 
+
 def make_torrent(input_dir, output_dir, tracker, passkey):
     torrent = os.path.join(output_dir, os.path.basename(input_dir)) + ".torrent"
     if not os.path.exists(os.path.dirname(torrent)):
         os.path.makedirs(os.path.dirname(torrent))
     tracker_url = '%(tracker)s%(passkey)s/announce' % {
-        'tracker' : tracker,
-        'passkey' : passkey,
+        'tracker': tracker,
+        'passkey': passkey,
     }
     command = ["mktorrent", "-p", "-s", "nwcd", "-a", tracker_url, "-o", torrent, input_dir]
     subprocess.check_output(command, stderr=subprocess.STDOUT)
     return torrent
+
 
 def main():
     import argparse
@@ -362,4 +379,6 @@ def main():
 
     transcode_release(os.path.expanduser(args.input_dir), os.path.expanduser(args.output_dir), args.output_format, args.threads)
 
-if __name__ == "__main__": main()
+
+if __name__ == "__main__":
+    main()

@@ -33,16 +33,18 @@ import mutagen.mp3
 from mutagen.easyid3 import EasyID3
 
 numeric_tags = set([
-        'tracknumber',
-        'discnumber',
-        'tracktotal',
-        'totaltracks',
-        'disctotal',
-        'totaldiscs',
-        ])
+    'tracknumber',
+    'discnumber',
+    'tracktotal',
+    'totaltracks',
+    'disctotal',
+    'totaldiscs',
+])
+
 
 class TaggingException(Exception):
     pass
+
 
 def valid_fractional_tag(value):
     # m or m/n
@@ -50,6 +52,7 @@ def valid_fractional_tag(value):
         return True
     else:
         return False
+
 
 def scrub_tag(name, value):
     """Strip whitespace (and other common problems) from tag values.
@@ -74,6 +77,7 @@ def scrub_tag(name, value):
 
     return scrubbed_value
 
+
 def check_tags(filename, check_tracknumber_format=True):
     """Verify that the file has the required NW tags.
 
@@ -95,6 +99,7 @@ def check_tags(filename, check_tracknumber_format=True):
 
     return (True, None)
 
+
 def copy_tags(flac_file, transcode_file):
     flac_info = mutagen.flac.FLAC(flac_file)
     transcode_info = None
@@ -114,7 +119,7 @@ def copy_tags(flac_file, transcode_file):
 
     for tag in filter(valid_key_fn, flac_info):
         # scrub the FLAC tags, just to be on the safe side.
-        values = map(lambda v: scrub_tag(tag,v), flac_info[tag])
+        values = map(lambda v: scrub_tag(tag, v), flac_info[tag])
         if values and values != [u'']:
             transcode_info[tag] = values
 
@@ -153,25 +158,31 @@ def copy_tags(flac_file, transcode_file):
 
 # EasyID3 extensions for NWbetter.
 
+
 for key, frameid in {
     'albumartist': 'TPE2',
     'album artist': 'TPE2',
     'grouping': 'TIT1',
     'content group': 'TIT1',
-    }.iteritems():
+}.iteritems():
     EasyID3.RegisterTextKey(key, frameid)
+
 
 def comment_get(id3, _):
     return [comment.text for comment in id3['COMM'].text]
 
+
 def comment_set(id3, _, value):
     id3.add(mutagen.id3.COMM(encoding=3, lang='eng', desc='', text=value))
+
 
 def originaldate_get(id3, _):
     return [stamp.text for stamp in id3['TDOR'].text]
 
+
 def originaldate_set(id3, _, value):
     id3.add(mutagen.id3.TDOR(encoding=3, text=value))
+
 
 EasyID3.RegisterKey('comment', comment_get, comment_set)
 EasyID3.RegisterKey('description', comment_get, comment_set)
